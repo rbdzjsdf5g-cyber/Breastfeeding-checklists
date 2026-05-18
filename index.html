@@ -1,0 +1,287 @@
+import { useState } from "react";
+
+const checklistData = [
+  {
+    category: "1. Эхийн бэлтгэл байдал",
+    color: "#E8F4FD",
+    accent: "#2196F3",
+    items: [
+      { id: "e1", text: "Эх хөхүүлэхийг хүсч байгаа эсэх (сайн дурын байдал)" },
+      { id: "e2", text: "Хөхний орчим цэвэр, хуурай байгаа эсэх" },
+      { id: "e3", text: "Хөхний хэлбэр (хавтгай, хонхойсон хөх илэрсэн эсэх)" },
+      { id: "e4", text: "Хөхний хагарал, өвдөлт байгаа эсэх (байвал зөвлөгөө өгөх)" },
+      { id: "e5", text: "Эх сүүний хангалттай ялгаралт байгаа эсэх" },
+    ],
+  },
+  {
+    category: "2. Хөхүүлэх байрлал (Positioning)",
+    color: "#F0FBF4",
+    accent: "#4CAF50",
+    items: [
+      { id: "b1", text: "Хүүхдийн толгой, бие, хөл нэг шулуун шугамд байгаа эсэх" },
+      { id: "b2", text: "Хүүхдийн хэвлий эхийн хэвлийд нийлсэн байгаа эсэх" },
+      { id: "b3", text: "Хүүхдийн бие эхийн гар, биеэр дэмжигдсэн байгаа эсэх" },
+      { id: "b4", text: "Хүүхдийн нүүр хөхрүү харсан байгаа эсэх" },
+      { id: "b5", text: "Эхийн нуруу тайван, тулгууртай суусан байгаа эсэх" },
+    ],
+  },
+  {
+    category: "3. Хөх барих (Latch-on)",
+    color: "#FFF8E1",
+    accent: "#FF9800",
+    items: [
+      { id: "l1", text: "Хүүхдийн ам өргөн нээгдсэн байгаа эсэх" },
+      { id: "l2", text: "Хүүхэд хөхний толгой болон тойрлог хэсгийг (areola) хамт барьсан эсэх" },
+      { id: "l3", text: "Хүүхдийн доод уруул гадагшаа эргэсэн байгаа эсэх" },
+      { id: "l4", text: "Хүүхдийн хамар хөхнөөс чөлөөтэй байгаа эсэх (амьсгалд саад болохгүй)" },
+      { id: "l5", text: "Хөхүүлэх үед эхэд өвдөлт байхгүй байгаа эсэх" },
+    ],
+  },
+  {
+    category: "4. Хөхүүлэх хугацаа, давтамж",
+    color: "#F3E5F5",
+    accent: "#9C27B0",
+    items: [
+      { id: "h1", text: "Шинэ төрсөн хүүхдэд 24 цагт 8–12 удаа хөхүүлж байгаа эсэх" },
+      { id: "h2", text: "Нэг хөхлөгийн хооронд 2–3 цагаас илүүгүй хугацаа өнгөрч байгаа эсэх" },
+      { id: "h3", text: "Хүүхэд нэг удаагийн хөхлөгт 10–20 минутаас доошгүй хөхдөг эсэх" },
+      { id: "h4", text: "Эхлээд нэг хөхийг сайн хөхсний дараа нөгөөд шилждэг эсэх" },
+      { id: "h5", text: "Шөнийн хөхлөгийг хадгалж байгаа эсэх (сүүний ялгаралтыг дэмжих)" },
+    ],
+  },
+  {
+    category: "5. Хүүхдийн хооллолтын хүрэлцэл",
+    color: "#E8F5E9",
+    accent: "#388E3C",
+    items: [
+      { id: "k1", text: "Хүүхэд хоолны дараа тайвширч, нойрссон байдаг эсэх" },
+      { id: "k2", text: "24 цагт 6-аас доошгүй чийгэн зүгч байдаг эсэх" },
+      { id: "k3", text: "24 цагт 3-аас доошгүй давтамжтай баас гарч байгаа эсэх (эхний сард)" },
+      { id: "k4", text: "Жин нь хэвийн өсч байгаа эсэх (7 хоногийн дараа төрсөн жингийнхээ түвшинд буцаж очсон эсэх)" },
+      { id: "k5", text: "Арьсны тургор хэвийн байгаа эсэх (дегидратацийн шинж байхгүй)" },
+    ],
+  },
+  {
+    category: "6. Эхийн хоол тэжээл, дэмжлэг",
+    color: "#FBE9E7",
+    accent: "#E64A19",
+    items: [
+      { id: "d1", text: "Эх хангалттай ус уусан эсэх (өдөрт 8–10 аяга)" },
+      { id: "d2", text: "Эх тэнцвэртэй хоол хүнс хэрэглэж байгаа эсэх" },
+      { id: "d3", text: "Хөхүүлэх үед тамхи, архи хэрэглэхгүй байгаа эсэх" },
+      { id: "d4", text: "Гэр бүлийн дэмжлэг байгаа эсэх" },
+      { id: "d5", text: "Сүүний хангалт бага гэж санаа зовж байвал зөвлөгөө авах боломж байгаа эсэх" },
+    ],
+  },
+  {
+    category: "7. Нэмэлт хоол (6 сараас хойш)",
+    color: "#E0F7FA",
+    accent: "#0097A7",
+    items: [
+      { id: "n1", text: "6 сар хүрэхээс өмнө нэмэлт хоол өгөөгүй байгаа эсэх" },
+      { id: "n2", text: "Нэмэлт хоол эхлүүлэхэд хөхөөр хооллолтыг үргэлжлүүлж байгаа эсэх" },
+      { id: "n3", text: "Нэмэлт хоол насанд тохирсон (нэг бүтээгдэхүүнээс эхэлсэн) байгаа эсэх" },
+      { id: "n4", text: "2 нас хүртэл хөхүүлэх зорилт тавигдсан эсэх" },
+    ],
+  },
+];
+
+const visitLabels = {
+  v1: "3-7 хоног",
+  v2: "1 сар",
+  v3: "2 сар",
+  v4: "4 сар",
+  v5: "6 сар",
+  v6: "9 сар",
+  v7: "12 сар",
+};
+
+export default function BreastfeedingChecklist() {
+  const [activeVisit, setActiveVisit] = useState("v1");
+  const [checked, setChecked] = useState({});
+  const [patientName, setPatientName] = useState("");
+  const [doctorName, setDoctorName] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [notes, setNotes] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+
+  const visitKey = (id) => `${activeVisit}_${id}`;
+
+  const toggle = (id) => {
+    const key = visitKey(id);
+    setChecked((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const totalItems = checklistData.reduce((s, c) => s + c.items.length, 0);
+  const checkedCount = checklistData.reduce(
+    (s, c) =>
+      s + c.items.filter((i) => checked[visitKey(i.id)]).length,
+    0
+  );
+  const pct = Math.round((checkedCount / totalItems) * 100);
+
+  const getColor = () => {
+    if (pct >= 80) return "#4CAF50";
+    if (pct >= 50) return "#FF9800";
+    return "#F44336";
+  };
+
+  const getLabel = () => {
+    if (pct >= 80) return "Сайн ✓";
+    if (pct >= 50) return "Дунд — зөвлөгөө шаардлагатай";
+    return "Анхаарал шаардлагатай ⚠";
+  };
+
+  return (
+    <div style={{ fontFamily: "'Segoe UI', sans-serif", background: "#F5F7FA", minHeight: "100vh", padding: "20px" }}>
+      {/* Header */}
+      <div style={{ background: "linear-gradient(135deg, #1565C0, #42A5F5)", borderRadius: 16, padding: "24px", marginBottom: 20, color: "#fff" }}>
+        <div style={{ fontSize: 11, opacity: 0.8, marginBottom: 4, letterSpacing: 1 }}>БАЯНЗҮРХ ДҮҮРГИЙН ӨРХИЙН ЭМЧ</div>
+        <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>🤱 Хөхөөр Хоолуулалтын Хяналтын Хуудас</h1>
+        <div style={{ marginTop: 6, fontSize: 13, opacity: 0.9 }}>Нярайн үзлэгийн үед хэрэглэх — ДЭМБ протоколд үндэслэсэн</div>
+      </div>
+
+      {/* Patient Info */}
+      <div style={{ background: "#fff", borderRadius: 12, padding: 20, marginBottom: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}>
+        <div style={{ fontWeight: 700, marginBottom: 12, color: "#1565C0", fontSize: 14 }}>📋 Мэдээлэл</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+          <div>
+            <label style={{ fontSize: 12, color: "#666", display: "block", marginBottom: 4 }}>Эхийн нэр</label>
+            <input value={patientName} onChange={e => setPatientName(e.target.value)}
+              style={{ width: "100%", padding: "8px 10px", border: "1.5px solid #E0E0E0", borderRadius: 8, fontSize: 13, boxSizing: "border-box" }}
+              placeholder="Бичнэ үү..." />
+          </div>
+          <div>
+            <label style={{ fontSize: 12, color: "#666", display: "block", marginBottom: 4 }}>Эмчийн нэр</label>
+            <input value={doctorName} onChange={e => setDoctorName(e.target.value)}
+              style={{ width: "100%", padding: "8px 10px", border: "1.5px solid #E0E0E0", borderRadius: 8, fontSize: 13, boxSizing: "border-box" }}
+              placeholder="Бичнэ үү..." />
+          </div>
+          <div>
+            <label style={{ fontSize: 12, color: "#666", display: "block", marginBottom: 4 }}>Огноо</label>
+            <input type="date" value={date} onChange={e => setDate(e.target.value)}
+              style={{ width: "100%", padding: "8px 10px", border: "1.5px solid #E0E0E0", borderRadius: 8, fontSize: 13, boxSizing: "border-box" }} />
+          </div>
+        </div>
+      </div>
+
+      {/* Visit Selector */}
+      <div style={{ background: "#fff", borderRadius: 12, padding: 16, marginBottom: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}>
+        <div style={{ fontWeight: 700, marginBottom: 10, color: "#1565C0", fontSize: 14 }}>📅 Үзлэгийн ангилал</div>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {Object.entries(visitLabels).map(([key, label]) => (
+            <button key={key} onClick={() => setActiveVisit(key)}
+              style={{
+                padding: "7px 14px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600,
+                background: activeVisit === key ? "#1565C0" : "#EEF2FF",
+                color: activeVisit === key ? "#fff" : "#1565C0",
+                transition: "all 0.2s"
+              }}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Progress */}
+      <div style={{ background: "#fff", borderRadius: 12, padding: 16, marginBottom: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <span style={{ fontWeight: 700, fontSize: 14, color: "#333" }}>Гүйцэтгэлийн явц</span>
+          <span style={{ fontWeight: 700, fontSize: 16, color: getColor() }}>{checkedCount}/{totalItems} — {getLabel()}</span>
+        </div>
+        <div style={{ background: "#EEE", borderRadius: 20, height: 10, overflow: "hidden" }}>
+          <div style={{ width: `${pct}%`, background: getColor(), height: "100%", borderRadius: 20, transition: "width 0.4s ease" }} />
+        </div>
+      </div>
+
+      {/* Checklist */}
+      {checklistData.map((section) => (
+        <div key={section.category} style={{ background: "#fff", borderRadius: 12, padding: 16, marginBottom: 14, boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}>
+          <div style={{ fontWeight: 700, fontSize: 14, color: section.accent, marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ background: section.color, padding: "4px 10px", borderRadius: 20, border: `1.5px solid ${section.accent}` }}>
+              {section.category}
+            </span>
+          </div>
+          {section.items.map((item) => {
+            const key = visitKey(item.id);
+            const isChecked = !!checked[key];
+            return (
+              <div key={item.id}
+                onClick={() => toggle(item.id)}
+                style={{
+                  display: "flex", alignItems: "flex-start", gap: 12, padding: "10px 12px",
+                  borderRadius: 8, cursor: "pointer", marginBottom: 6,
+                  background: isChecked ? section.color : "#FAFAFA",
+                  border: `1.5px solid ${isChecked ? section.accent : "#E8E8E8"}`,
+                  transition: "all 0.2s"
+                }}>
+                <div style={{
+                  width: 22, height: 22, minWidth: 22, borderRadius: 6, border: `2px solid ${isChecked ? section.accent : "#CCC"}`,
+                  background: isChecked ? section.accent : "#fff",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  marginTop: 1, transition: "all 0.2s"
+                }}>
+                  {isChecked && <span style={{ color: "#fff", fontSize: 13, fontWeight: 900 }}>✓</span>}
+                </div>
+                <span style={{ fontSize: 13.5, color: isChecked ? "#333" : "#555", lineHeight: 1.5, textDecoration: isChecked ? "none" : "none" }}>
+                  {item.text}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      ))}
+
+      {/* Notes */}
+      <div style={{ background: "#fff", borderRadius: 12, padding: 16, marginBottom: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}>
+        <div style={{ fontWeight: 700, fontSize: 14, color: "#1565C0", marginBottom: 10 }}>📝 Тэмдэглэл / Зөвлөмж</div>
+        <textarea
+          value={notes[activeVisit] || ""}
+          onChange={e => setNotes(prev => ({ ...prev, [activeVisit]: e.target.value }))}
+          placeholder="Эмчийн тэмдэглэл, зөвлөмж бичих..."
+          style={{ width: "100%", minHeight: 90, padding: "10px", border: "1.5px solid #E0E0E0", borderRadius: 8, fontSize: 13, resize: "vertical", boxSizing: "border-box", fontFamily: "inherit" }}
+        />
+      </div>
+
+      {/* Action Buttons */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 30 }}>
+        <button
+          onClick={() => {
+            setChecked({});
+            setNotes({});
+            setSubmitted(false);
+          }}
+          style={{ flex: 1, padding: "12px", borderRadius: 10, border: "1.5px solid #E0E0E0", background: "#fff", color: "#666", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+          🔄 Дахин эхлэх
+        </button>
+        <button
+          onClick={() => setSubmitted(true)}
+          style={{ flex: 2, padding: "12px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, #1565C0, #42A5F5)", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
+          💾 Үзлэг хадгалах
+        </button>
+      </div>
+
+      {submitted && (
+        <div style={{ background: "#E8F5E9", border: "2px solid #4CAF50", borderRadius: 12, padding: 16, marginBottom: 20, textAlign: "center" }}>
+          <div style={{ fontSize: 20 }}>✅</div>
+          <div style={{ fontWeight: 700, color: "#2E7D32", marginTop: 4 }}>Үзлэг амжилттай хадгалагдлаа!</div>
+          <div style={{ fontSize: 13, color: "#555", marginTop: 4 }}>
+            {patientName && <span>Эх: <b>{patientName}</b> | </span>}
+            {doctorName && <span>Эмч: <b>{doctorName}</b> | </span>}
+            Үзлэг: <b>{visitLabels[activeVisit]}</b> | Гүйцэтгэл: <b>{pct}%</b>
+          </div>
+          {notes[activeVisit] && (
+            <div style={{ marginTop: 8, fontSize: 12, color: "#444", background: "#fff", borderRadius: 8, padding: "8px 12px", textAlign: "left" }}>
+              <b>Тэмдэглэл:</b> {notes[activeVisit]}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Footer */}
+      <div style={{ textAlign: "center", fontSize: 11, color: "#999", paddingBottom: 10 }}>
+        ДЭМБ · ЮНИСЕФ протоколд үндэслэсэн | Баянзүрх дүүргийн өрхийн эмч нарт зориулав
+      </div>
+    </div>
+  );
+}
